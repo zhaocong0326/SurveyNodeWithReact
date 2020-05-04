@@ -1,6 +1,6 @@
 const _ = require("lodash");
 const Path = require("path-parser");
-const URL = require("url").URL;
+const { URL } = require("url");
 const mongoose = require("mongoose");
 const requireLogin = require("../middlewares/requireLogin");
 const requireCredits = require("../middlewares/requireCredits");
@@ -14,25 +14,22 @@ module.exports = app => {
     const surveys = await Survey.find({ _user: req.user.id }).select({
       recipients: false
     });
+
     res.send(surveys);
   });
 
-  app.get("/api/surveys/surveyId/:choice", (req, res) => {
+  app.get("/api/surveys/:surveyId/:choice", (req, res) => {
     res.send("Thanks for voting!");
   });
 
   app.post("/api/surveys/webhooks", (req, res) => {
-    console.log(req.body);
     const p = new Path("/api/surveys/:surveyId/:choice");
+
     _.chain(req.body)
       .map(({ email, url }) => {
         const match = p.test(new URL(url).pathname);
         if (match) {
-          return {
-            email: email,
-            surveyId: match.surveyId,
-            choice: match.choice
-          };
+          return { email, surveyId: match.surveyId, choice: match.choice };
         }
       })
       .compact()
@@ -42,7 +39,7 @@ module.exports = app => {
           {
             _id: surveyId,
             recipients: {
-              $elemMatch: { email: email, response: false }
+              $elemMatch: { email: email, responded: false }
             }
           },
           {
@@ -50,11 +47,10 @@ module.exports = app => {
             $set: { "recipients.$.responded": true },
             lastResponded: new Date()
           }
-        ).exect();
+        ).exec();
       })
       .value();
 
-    console.log(uniqueEvents);
     res.send({});
   });
 
@@ -67,17 +63,19 @@ module.exports = app => {
       body,
       recipients: recipients.split(",").map(email => ({ email: email.trim() })),
       _user: req.user.id,
-      dataSent: Date.now()
+      dateSent: Date.now()
     });
-    // Great place to send an email
+
+    // Great place to send an email!
     const mailer = new Mailer(survey, surveyTemplate(survey));
+
     try {
       await mailer.send();
       await survey.save();
       req.user.credits -= 1;
       const user = await req.user.save();
 
-      req.send(user);
+      res.send(user);
     } catch (err) {
       res.status(422).send(err);
     }
