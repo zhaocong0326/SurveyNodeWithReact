@@ -13,12 +13,7 @@ class SurveyList extends Component {
     if (this.state.showSurveyList) {
       return (
         <div>
-          <button
-            className="green darken-3 white-text btn-flat"
-            onClick={() => this.setState({ showSurveyList: false })}
-          >
-           Get Datas Back
-          </button>
+          <p>You've deleted records in the page! </p>
         </div>
       );
     }
@@ -68,25 +63,22 @@ class SurveyList extends Component {
   render() {
     return (
     <div>
+      <br/>
       <button
             className="yellow darken-3 white-text btn-flat"
-            onClick={() => this.setState({ showSurveyList: true })}
+            onClick={() => this.setState({ showSurveyList: !this.state.showSurveyList })}
           >
-          Clear All Records
-      </button>
+          Clear or Back
+      </button> &nbsp;
+
       <button
             className="green light-3 white-text btn-flat"
             
-            onClick={() => this.setState({ changeColor: true })}
+            onClick={() => this.setState({ changeColor: !this.state.changeColor })}
           >
-          Yellow Background
+          Change Background
       </button>
-      <button
-            className="yellow darken-3 white-text btn-flat"
-            onClick={() => this.setState({ changeColor: false })}
-          >
-          White Background
-      </button>
+
       {this.renderSurveys()}
     </div>
     );
