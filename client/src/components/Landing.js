@@ -2,9 +2,9 @@ import React from "react";
 
 const Landing = () => {
   return (
-    <div style={{ textAlign: "center", color: "Green"}}>
+    <div style={{ textAlign: "center"}}>
       <h1>Emaily!</h1>
-      Collect feedback from your users
+      Collect feedback from your users!
     </div>
   );
 };
