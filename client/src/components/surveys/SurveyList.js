@@ -26,7 +26,7 @@ class SurveyList extends Component {
       return this.props.surveys.map(survey => {
         if (this.state.changeColor) {
           return (
-            <div className=" yellow card darken-2" key={survey._id}>
+            <div className=" yellow card light-2" key={survey._id}>
               <div className="card-content">
                 <span className="card-title">{survey.title}</span>
                 <p>{survey.body}</p>
@@ -76,15 +76,16 @@ class SurveyList extends Component {
       </button>
       <button
             className="green light-3 white-text btn-flat"
+            
             onClick={() => this.setState({ changeColor: true })}
           >
-          White Background
+          Yellow Background
       </button>
       <button
             className="yellow darken-3 white-text btn-flat"
             onClick={() => this.setState({ changeColor: false })}
           >
-          Yellow Background
+          White Background
       </button>
       {this.renderSurveys()}
     </div>
